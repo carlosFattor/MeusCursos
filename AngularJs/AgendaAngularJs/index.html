@@ -5,6 +5,7 @@
 	<title>Lista Telefonica</title>
 	<script type="text/javascript" src="lib/angularjs/angular.min.js"></script>
 	<script type="text/javascript" src="lib/angularjs/angular-messages.js"></script>
+	<script type="text/javascript" src="lib/angularjs/angular-locale_pt-br.js"></script>
 	<script type="text/javascript" src="lib/bootstrap/js/bootstrap-colorpicker-module.min.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="lib/bootstrap/css/colorpicker.min.css">
@@ -20,9 +21,7 @@
 		margin-right: auto;
 		margin-top: 10px;
 	}
-	.table {
-		margin-top: 20px;
-	}
+
 	.table th {
 		text-align: center;		
 	}
@@ -33,6 +32,9 @@
 		font-weight: bold;
 		text-decoration: underline;
 	}
+	.input-group {
+		margin-top: 20px;
+	}
 	
 	</style>
 
@@ -41,19 +43,20 @@
 		angular.module("listaTelefonica").controller("listaTelefonicaCtrl", function($scope){
 			$scope.app = "Lista Telefonica";
 			$scope.contatos = [
-					{nome: "Carlos", telefone: "1634126328", cor: "blue", operadora: {nome: "Oi", codigo:"14"}},
-					{nome: "Fattor", telefone: "11988313154", cor: "yellow", operadora: {nome: "Vivo", codigo:"15"}},
-					{nome: "Ludmila", telefone: "964300041", cor: "red", operadora: {nome: "Tim", codigo:"41"}}
+					{nome: "Carlos", telefone: "1634126328", cor: "blue", data: new Date(), operadora: {nome: "Oi", codigo:"14", preco: 1}},
+					{nome: "Fattor", telefone: "11988313154", cor: "yellow", data: new Date(), operadora: {nome: "Vivo", codigo:"15", preco: 2}},
+					{nome: "Ludmila", telefone: "964300041", cor: "red", data: new Date(),operadora: {nome: "Tim", codigo:"41", preco: 5}}
 				];
 			$scope.operadoras = [
-					{nome: "Oi", codigo:"14", categoria: "Movel"},
-					{nome: "Vivo", codigo:"15", categoria: "Movel"},
-					{nome: "Tim", codigo:"41", categoria: "Movel"},
-					{nome: "Net", codigo:"31", categoria: "Fixo"},
-					{nome: "Embratel", codigo:"21", categoria: "Fixo"}
+					{nome: "Oi", codigo:"14", categoria: "Movel", preco: 1},
+					{nome: "Vivo", codigo:"15", categoria: "Movel", preco: 2},
+					{nome: "Tim", codigo:"41", categoria: "Movel", preco: 5},
+					{nome: "Net", codigo:"31", categoria: "Fixo",preco: 3},
+					{nome: "Embratel", codigo:"21", categoria: "Fixo", preco: 4}
 				];
 
 			$scope.adicionaContato = function(contato){
+				contato.date(new Date());
 				$scope.contatos.push(angular.copy(contato));
 				delete $scope.contato;
 				$scope.contatoForm.$setPristine();
@@ -68,6 +71,10 @@
 					return contato.selecionado;
 				});
 				console.log(isSelecionado);
+			};
+			$scope.ordenarPorCampo = function(campo){
+				$scope.criterioBusca = campo;
+				$scope.ordenarPor = !$scope.ordenarPor;
 			}
 		});
 	</script>
@@ -78,19 +85,27 @@
 	<div ng-controller="listaTelefonicaCtrl" class="container">
 		<div class="jumbotron">
 			<h3>{{app}}</h3>
+			<div class="form-group">
+				<div class="input-group">
+					<div class="input-group-addon"><span class="glyphicon glyphicon-search"></span></div>
+					<input type="text" class="form-control" ng-model="criterioBusca" placeholder="O que você esta procurando?"/>
+				</div>
+			</div>
 			<div class="table-responsive">
 				<table class="table table-striped">
 					<tr>
 						<th></th>
-						<th>Nome</th>
-						<th>Telefone</th>
-						<th>Operadora</th>
+						<th><a href="" ng-click="ordenarPorCampo(nome)">Nome</a></th>
+						<th><a href="" ng-click="ordenarPorCampo(nome)">Telefone</a></th>
+						<th><a href="" ng-click="ordenarPorCampo(data)">Data</a></th>
+						<th><a href="" ng-click="ordenarPorCampo(nome)">Operadora</a></th>
 						<th></th>
 					</tr>
-					<tr ng-class="{'negrito': contato.selecionado}" ng-repeat="contato in contatos">
+					<tr ng-class="{'negrito': contato.selecionado}" ng-repeat="contato in contatos | filter:criterioBusca | orderBy:criterioBusca:ordenarPor">
 						<td><input type="checkbox" ng-model="contato.selecionado"/>
 						<td>{{contato.nome}}</td>
 						<td>{{contato.telefone}}</td>
+						<td>{{contato.data | date:'EEE dd/MM/yy'}}</td>
 						<td>{{contato.operadora.nome}}</td>
 						<td><div style="width: 20px; height: 20px;" ng-style="{'background-color': contato.cor}"></div></td>
 					</tr>
@@ -117,7 +132,7 @@
 								O campo Telefone deve seguir o formato NNNN-NNNNN.
 							</div>
 						</div>
-					<select class="form-control" ng-model="contato.operadora" ng-options="operadora.nome group by operadora.categoria for operadora in operadoras">
+					<select class="form-control" ng-model="contato.operadora" ng-options="operadora.nome +' ('+(operadora.preco | currency)+')'  group by operadora.categoria for operadora in operadoras">
 						<option value="">Selecione uma operadora</option>
 					</select>
 					<button colorpicker type="button" ng-style="{'background-color': contato.cor}" class="form-control btn btn-success" ng-model="contato.cor">Selecione uma Cor</button>

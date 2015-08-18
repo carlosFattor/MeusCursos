@@ -1,0 +1,41 @@
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script src="js/jquery-1.11.0.min.js"></script>
+        <script src="js/angular.min.js"></script>
+        <script>
+            var App = angular.module('App', []);
+            App.controller('Controller', function($scope, $http){
+               $scope.peoples = [
+                 {id: 1, name: 'People 1'},  
+                 {id: 2, name: 'People 2'},
+                 {id: 3, name: 'People 3'}                 
+               ]; 
+               $scope.edit = function(id){                   
+                   var i = 0;
+                   var a = false;
+                   while (i < $scope.peoples.length && a === false){
+                       if ($scope.peoples[i].id === id){
+                           a = true;
+                       } else {
+                           i++;
+                       }
+                   }
+                   if (i < $scope.peoples.length){
+                        window.sessionStorage.setItem('people', JSON.stringify($scope.peoples[i]));
+                        window.location.href='edit.html'
+                   } else {
+                       alert('Item não encontrado');
+                   }
+               }
+            });
+        </script>
+    </head>
+    <body>
+        <div ng-app="App">
+            <ul ng-controller="Controller">
+                <li ng-repeat="people in peoples">
+                    <a href ng-click="edit(people.id)">{{people.name}}</a>
+                </li>
+            </ul>
+        </div>
+    </body>
+</html>

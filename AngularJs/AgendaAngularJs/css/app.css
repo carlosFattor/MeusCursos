@@ -1,0 +1,24 @@
+@-moz-document url-prefix() {
+	fieldset { display: table-cell; }
+}
+.jumbotron {
+	width: 700px;
+	text-align: center;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 10px;
+}
+
+.table th {
+	text-align: center;		
+}
+.btn {
+	margin-top: 5px;
+}
+.negrito {
+	font-weight: bold;
+	text-decoration: underline;
+}
+.input-group {
+	margin-top: 20px;
+}

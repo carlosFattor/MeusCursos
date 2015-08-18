@@ -1,0 +1,28 @@
+<div class="form-group">
+	<div class="input-group">
+		<div class="input-group-addon"><span class="glyphicon glyphicon-search"></span></div>
+		<input type="text" class="form-control" ng-model="criterioBusca" placeholder="O que você esta procurando?"/>
+	</div>
+</div>
+<div class="table-responsive">
+	<table class="table table-striped">
+		<tr>
+			<th></th>
+			<th>Serial</th>
+			<th><a href="" ng-click="ordenarPorCampo(nome)">Nome</a></th>
+			<th><a href="" ng-click="ordenarPorCampo(nome)">Telefone</a></th>
+			<th><a href="" ng-click="ordenarPorCampo(data)">Data</a></th>
+			<th><a href="" ng-click="ordenarPorCampo(nome)">Operadora</a></th>
+			<th></th>
+		</tr>
+		<tr ng-class="{'negrito': contato.selecionado}" ng-repeat="contato in contatos | filter:criterioBusca | orderBy:criterioBusca:ordenarPor">
+			<td><input type="checkbox" ng-model="contato.selecionado"/>
+			<td>{{contato.serial}}</td>
+			<td>{{contato.nome}}</td>
+			<td>{{contato.telefone}}</td>
+			<td>{{contato.data | data:'dd/MM/yy'}}</td>
+			<td>{{contato.operadora.nome}}</td>
+			<td><div style="width: 20px; height: 20px;" ng-style="{'background-color': contato.cor}"></div></td>
+		</tr>
+	</table>
+</div>
